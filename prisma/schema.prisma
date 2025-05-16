@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String
+  password String
+}
+
+model Customers {
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String
+  image_url String
+  invoices  Invoices[]
+}
+
+model Invoices {
+  id         Int       @id @default(autoincrement())
+  customerId Int
+  amount     String
+  date       DateTime  @default(now())
+  status     String
+  customer   Customers @relation(fields: [customerId], references: [id])
+
+  @@index([customerId], map: "Invoices_customerId_fkey")
+}
